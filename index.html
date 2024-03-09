@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f7f8f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #53668c;
+            font-size: 18px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd
+        }
+
+        .wrapper {
+            max-width: 500px;
+            background-color: #fff;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        .wrapper h2 {
+            text-align: center;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .qr-settings-wrapper {
+            display: flex;
+            margin-left: -10px;
+            margin-right: -10px;
+            margin-bottom: 20px;
+        }
+
+        .qr-setting label {
+            text-transform: uppercase;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .qr-setting {
+            flex: 1;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .qr-setting input {
+            height: 30px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .qr-setting.text-input {
+            padding: 0;
+            margin-bottom: 5px;
+        }
+
+        .qr-setting.text-input input {
+            padding: 10px;
+        }
+
+        button[type=submit] {
+            background-color: #0c8ce9;
+            border: none;
+            padding: 10px 30px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        div#display-qr p {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        div#display-qr pre {
+            max-width: 100%;
+            overflow: scroll;
+            background-color: #f1efef;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h2>Generate QR code</h2>
+        <form action="/qr">
+            <div class="qr-settings-wrapper">
+                <div class="qr-setting">
+                    <label for="color">Color</label>
+                    <input oninput="formSubmit()" name="color" value="#000000" type="color" id="color">
+                </div>
+
+                <div class="qr-setting">
+                    <label for="bg">Background</label>
+                    <input oninput="formSubmit()" name="bg" value="#ffffff" type="color" id="bg">
+                </div>
+            </div>
+
+            <div class="qr-setting text-input">
+                <label for="text">Text</label>
+                <input oninput="formSubmit()" type="text" id="text" name="text" value="Test">
+            </div>
+        </form>
+
+        <div id="display-qr">
+            <div style="display: none" class="loading-text">Loading ...</div>
+            <img src="" alt="" id="qr-image" style="display:none;">
+
+            <p>API URL</p>
+            <pre></pre>
+        </div>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const qrImage = document.getElementById('qr-image');
+        const displayQr = document.getElementById('display-qr');
+        const loadingText = document.querySelector('.loading-text');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const color = document.getElementById('color').value.substring(1);
+            const bg = document.getElementById('bg').value.substring(1);
+            const text = document.getElementById('text').value;
+            const url = `/qr?color=${color}&bg=${bg}&text=${text}`;
+
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    qrImage.src = URL.createObjectURL(blob);
+                    qrImage.style.display = 'block';
+                    loadingText.style.display = 'none';
+                    displayQr.querySelector('pre').innerText = window.location.origin + url;
+                });
+        });
+
+        function formSubmit() {
+            form.dispatchEvent(new Event('submit'));
+        }
+
+        formSubmit();
+    </script>
+</body>
+</html>

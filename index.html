@@ -151,6 +151,15 @@
                 });
         });
 
+        // click pre to select all
+        displayQr.querySelector('pre').addEventListener('click', function() {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+
         function formSubmit() {
             form.dispatchEvent(new Event('submit'));
         }

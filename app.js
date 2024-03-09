@@ -20,14 +20,14 @@ app.get('/qr', async (req, res) => {
         }
 
         // Default colors
-        const defaultColor = '#000000'; // Default color for the dark modules (black)
-        const defaultBgColor = '#FFFFFF'; // Default color for the light modules (white)
+        const defaultColor = '#000000';
+        const defaultBgColor = '#FFFFFF';
 
         // Use query parameters if available, otherwise use defaults
         const darkColor = color || defaultColor;
         const lightColor = bg || defaultBgColor;
 
-        const qrCode = await qr.toDataURL(JSON.stringify(text), {
+        const qrCode = await qr.toDataURL(text, {
             margin: 1,
             height: 800,
             width: 800,

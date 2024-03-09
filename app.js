@@ -27,8 +27,7 @@ app.get('/qr', async (req, res) => {
         const darkColor = color || defaultColor;
         const lightColor = bg || defaultBgColor;
 
-        const qrData = { type: 'url', data: text };
-        const qrCode = await qr.toDataURL(JSON.stringify(qrData), {
+        const qrCode = await qr.toDataURL(JSON.stringify(text), {
             margin: 1,
             height: 800,
             width: 800,
